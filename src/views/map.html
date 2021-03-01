@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+  <title>My Geocode App</title>
+  <link type="text/css" rel="stylesheet" href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css"
+        rel="stylesheet">
+</head>
+
+<body>
+<h1 class=" text-2xl text-black">My Geocode Api</h1>
+
+
+<div class="my-4">
+  <h1>Enter location</h1>
+
+  <form id="location-form">
+    <input type="text" id="location-input" class="border border-black">
+    <br>
+
+  </form>
+  <button id="mybtn" class="p-4 bg-blue-500"> Fetch Data</button>
+
+
+</div>
+
+<div id="formatted-address" class="py-4 bg-green-300">
+</div>
+<h3>Address component</h3>
+<div id="address-component" class="py-4 bg-green-300">
+</div>
+
+<h3>Geometry</h3>
+
+<div id="geometry" class="py-4 bg-green-300">
+
+
+  <script>
+
+    //call Geocode
+
+    // geocode();
+
+    // get location form
+    var locationForm = document.getElementById('location-form');
+    var clicker = document.getElementById('mybtn');
+
+    clicker.addEventListener('click', geocode)
+
+
+    locationForm.addEventListener('click', function () {
+      // geocode()
+      console.log("fycgvhbjl")
+    })
+
+
+
+    function geocode(e) {
+      //prevent defual
+
+      e.preventDefault();
+
+      var location = document.getElementById('location-input').value;
+      axios.get('https://maps.googleapis.com/maps/api/geocode/json?', {
+        params: {
+          address: location,
+          key: 'AIzaSyBDZAeK6Ngp1yGGmvXPZ_J1vkmgpR_hul0'
+        }
+      })
+        .then(function (response) {
+          //log full response
+          console.log(response)
+
+          //formatted address
+          var formattedAddress = response.data.results[0].formatted_address;
+          var formattedAddress = `
+                    <ul>
+                            <li>${formattedAddress}</li>
+
+                     </ul>
+
+                    `;
+
+          //address Components
+          var addressComponents = response.data.results[0].address_components
+
+          var addressComponentsOutput = `
+                            <ul>
+
+                                `
+          for (var i = 0; i < addressComponents.length; i++) {
+            addressComponentsOutput += `
+                                    <li>
+                                        ${addressComponents[i].types[0]} :<span class=> ${addressComponents[i].long_name}<span>
+                                    </li>
+                                    `
+          }
+          addressComponentsOutput += '</ul>';
+
+          //Geometry
+
+          var lat = response.data.results[0].geometry.location.lat;
+          var lng = response.data.results[0].geometry.location.lng;
+
+          var geometryOutput = `
+                        <ul>
+                            <li><span class="font-bold">Latitude</span > ${lat} </li>
+                            <li><span class="font-bold">Longitude</span > ${lng} </li>
+                            </ul>
+                        `
+
+
+
+          //output to App
+          document.getElementById('formatted-address').innerHTML = formattedAddress;
+          document.getElementById('address-component').innerHTML = addressComponentsOutput;
+          document.getElementById('geometry').innerHTML = geometryOutput;
+
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    }
+
+  </script>
+
+
+</body>
+
+</html>
+
+
+
+
+<!-- https://maps.googleapis.com/maps/api/distancematrix/json?origins=Vancouver+BC|Seattle&destinations=San+Francisco|Victoria+BC&mode=bicycling&language=fr-FR&key=AIzaSyBDZAeK6Ngp1yGGmvXPZ_J1vkmgpR_hul0 -->
