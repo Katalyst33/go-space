@@ -194,6 +194,7 @@ export default {
         this.spinner = false;
 
         // eslint-disable-next-line no-undef
+        // eslint-disable-next-line no-undef
         this.mapError = "Your browser does not support geolocation";
       }
     },
